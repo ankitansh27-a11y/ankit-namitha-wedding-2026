@@ -1,0 +1,8 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "ankit-namitha-wedding-2026",
+  "compatibility_date": "2026-11-15",
+  "assets": {
+    "directory": "."
+  }
+}
