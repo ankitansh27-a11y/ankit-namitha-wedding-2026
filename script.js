@@ -3,6 +3,32 @@
   window.addEventListener('load',()=>setTimeout(()=>{pre.style.opacity='0';pre.style.visibility='hidden'},650));
 
   const menu=document.getElementById('menuBtn'),drawer=document.getElementById('drawer');
+
+  // Wedding music: starts after the first user interaction (browser autoplay rules),
+  // and can be controlled from the top-right Music button.
+  const music=document.getElementById('weddingMusic'),musicToggle=document.getElementById('musicToggle');
+  let musicStarted=false;
+  function updateMusicButton(){
+    const on=!music.paused;
+    musicToggle.classList.toggle('playing',on);
+    musicToggle.setAttribute('aria-pressed',String(on));
+    musicToggle.setAttribute('aria-label',on?'Pause wedding music':'Play wedding music');
+    musicToggle.innerHTML=on?'♫ <span>Playing</span>':'♫ <span>Music</span>';
+  }
+  async function startMusic(){
+    if(musicStarted) return;
+    try{await music.play();musicStarted=true;updateMusicButton();}
+    catch(e){}
+  }
+  ['pointerdown','keydown','touchstart'].forEach(type=>window.addEventListener(type,startMusic,{once:true,passive:true}));
+  musicToggle.addEventListener('click',async()=>{
+    if(music.paused){try{await music.play();musicStarted=true}catch(e){}}
+    else{music.pause();}
+    updateMusicButton();
+  });
+  music.addEventListener('play',updateMusicButton);
+  music.addEventListener('pause',updateMusicButton);
+  updateMusicButton();
   menu.addEventListener('click',()=>{drawer.classList.toggle('open');drawer.setAttribute('aria-hidden',String(!drawer.classList.contains('open')))});
   drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>drawer.classList.remove('open')));
 
